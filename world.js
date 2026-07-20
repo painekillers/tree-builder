@@ -1,5 +1,7 @@
-class World {
+export default class World {
+    /** @type {HTMLCanvasElement} */
     #canvas
+    #ctx
 
     #camera
 
@@ -12,6 +14,7 @@ class World {
 
     constructor(canvas) {
         this.#canvas = canvas
+        this.#ctx = canvas.getContext("2d")
     }
 
     set camera(cam) {
@@ -58,17 +61,30 @@ class World {
             return
         }
         this.#debounce = true
+        this.#needUpdate = false
 
-        // $ do stuff
+        //Update Logic
+        this.#ctx.restore()
+        this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height)
+        
+        let cpos = this.#camera.pos
+        this.#ctx.translate(this.#canvas.width / 2, this.#canvas.height / 2)
+        this.#ctx.scale(this.#camera.zoom, this.#camera.zoom);
+        this.#ctx.translate(-cpos.x, -cpos.y);
 
+        this.#objects.forEach(e => e.draw(this.#ctx))
+
+        //Update Logic Ends
         setTimeout(() => {
             this.#debounce = false
             if (this.#needUpdate) {this.update()}
         }, this.updateRate)
     }
+
+    resize(width, height) {
+        this.#canvas.width = width
+        this.#canvas.height = height
+
+        this.#camera.viewport = [width, height]
+    }
 }
-
-const canvas = document.getElementById("world");
-const ctx = canvas.getContext("2d");
-
-export default new World(ctx)

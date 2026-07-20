@@ -11,3 +11,7 @@ html {
   width: 100%;
   overflow: hidden;
 }
+
+canvas {
+  display: block;
+}

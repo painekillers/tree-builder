@@ -3,19 +3,23 @@ export default class Camera {
 
     #x = 0
     #y = 0
+    #width = 0
+    #height = 0
     #zoom = 1
 
     constructor(world) {
         this.#world = world
     }
 
-    set x(val) {
-        this.#x = val
+    set pos(p){
+        this.#x = p[0]
+        this.#y = p[1]
         this.#world.update()
     }
 
-    set y(val) {
-        this.#y = val
+    set viewport(v){
+        this.#width = v[0]
+        this.#height = v[1]
         this.#world.update()
     }
 
@@ -24,12 +28,18 @@ export default class Camera {
         this.#world.update()
     }
 
-    get x(){
-        return this.#x
+    get pos(){
+        return {
+            x: this.#x,
+            y: this.#y
+            }
     }
-    
-    get y(){
-        return this.#y
+
+    get viewport(){
+        return {
+            width: this.#width, 
+            height: this.#height
+            }
     }
     
     get zoom(){
