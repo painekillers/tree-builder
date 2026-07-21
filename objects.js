@@ -66,3 +66,51 @@ export class test extends PSInstance {
         )
     }
 }
+
+export class Image extends PSInstance {
+    #image
+
+    set image(img){
+        this.#image = img
+        this.world.update()
+    }
+
+    draw(ctx){
+        let pos = this.pos
+        let size = this.size
+
+        ctx.drawImage(
+            this.#image,
+            pos.x - size.width / 2,
+            pos.y - size.height / 2,
+            size.width,
+            size.height
+        )
+    }
+}
+
+export class TileMap extends Image{
+    #u
+    #v
+
+    set uv(uv){
+        this.#u = uv[0]
+        this.#v = uv[1]
+        this.world.update()
+    }
+
+    draw(ctx){
+        let pos = this.pos
+        let size = this.size
+
+        ctx.drawImage(
+            this.#image,
+            pos.x - size.width / 2,
+            pos.y - size.height / 2,
+            size.width,
+            size.height,
+            this.#u,
+            this.#v
+        )
+    }
+}
