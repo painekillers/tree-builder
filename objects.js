@@ -75,6 +75,10 @@ export class Image extends PSInstance {
         this.world.update()
     }
 
+    get image(){
+        return this.#image
+    }
+
     draw(ctx){
         let pos = this.pos
         let size = this.size
@@ -104,7 +108,7 @@ export class TileMap extends Image{
         let size = this.size
 
         ctx.drawImage(
-            this.#image,
+            this.image,
             pos.x - size.width / 2,
             pos.y - size.height / 2,
             size.width,
