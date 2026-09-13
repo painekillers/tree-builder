@@ -128,7 +128,9 @@ export class DrawGraph {
 
         let y = 0
         for (const [layerIndex, layerNodes] of layers) {
-            let x = 0
+            const layerWidth = layerNodes.length * nodeWidth + (layerNodes.length - 1) * nodeSpacing
+            let x = -layerWidth / 2 + nodeWidth / 2
+
             for (const layoutNode of layerNodes) {
                 const drawNode = new DrawNode(layoutNode, x, y, nodeWidth, nodeHeight)
                 this.nodes.push(drawNode)

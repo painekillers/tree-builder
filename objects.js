@@ -32,8 +32,8 @@ class PSInstance extends Object { //Position Size
     }
 
     set size(s){
-        this.#width = p[0]
-        this.#height = p[1]
+        this.#width = s[0]
+        this.#height = s[1]
         this.world.update()
     }
 
@@ -89,32 +89,6 @@ export class Image extends PSInstance {
             pos.y - size.height / 2,
             size.width,
             size.height
-        )
-    }
-}
-
-export class TileMap extends Image{
-    #u
-    #v
-
-    set uv(uv){
-        this.#u = uv[0]
-        this.#v = uv[1]
-        this.world.update()
-    }
-
-    draw(ctx){
-        let pos = this.pos
-        let size = this.size
-
-        ctx.drawImage(
-            this.image,
-            pos.x - size.width / 2,
-            pos.y - size.height / 2,
-            size.width,
-            size.height,
-            this.#u,
-            this.#v
         )
     }
 }

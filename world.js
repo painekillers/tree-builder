@@ -7,9 +7,6 @@ export default class World {
 
     updateRate = 1/60
 
-    #needUpdate = false
-    #debounce = false
-
     #objects = []
 
     constructor(canvas) {
@@ -55,30 +52,30 @@ export default class World {
         return this.#objects
     }
 
+    #frameRequested = false
+
     update() {
-        if (this.#debounce) {
-            this.#needUpdate = true
-            return
-        }
-        this.#debounce = true
-        this.#needUpdate = false
+        if (this.#frameRequested) return
 
-        //Update Logic
-        this.#ctx.restore()
-        this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height)
-        
-        let cpos = this.#camera.pos
-        this.#ctx.translate(this.#canvas.width / 2, this.#canvas.height / 2)
-        this.#ctx.scale(this.#camera.zoom, this.#camera.zoom);
-        this.#ctx.translate(-cpos.x, -cpos.y);
+        this.#frameRequested = true
 
-        this.#objects.forEach(e => e.draw(this.#ctx))
+        requestAnimationFrame(() => {
+            this.#frameRequested = false
 
-        //Update Logic Ends
-        setTimeout(() => {
-            this.#debounce = false
-            if (this.#needUpdate) {this.update()}
-        }, this.updateRate)
+            this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height)
+
+            this.#ctx.save()
+
+            const cpos = this.#camera.pos
+
+            this.#ctx.translate(this.#canvas.width / 2, this.#canvas.height / 2)
+            this.#ctx.scale(this.#camera.zoom, this.#camera.zoom)
+            this.#ctx.translate(-cpos.x, -cpos.y)
+
+            this.#objects.forEach(e => e.draw(this.#ctx))
+
+            this.#ctx.restore()
+        })
     }
 
     resize(width, height) {
