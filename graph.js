@@ -70,10 +70,26 @@ export class LayoutGraph {
 
         const rootNode = graph.nodeFromId(root)
         const visited = new Map()
+        const queue = [{
+            node: rootNode,
+            layer: 0,
+            from: null
+        }]
 
-        const traverse = (node, layer) => {
+        let qi = 0
+
+        while (qi < queue.length) {
+            const { node, layer, from } = queue[qi++]
+
             if (visited.has(node)) {
-                return
+                if (from) {
+                    const pos = visited.get(node)
+                    const ln = this.layers.get(pos.layer)[pos.ind]
+
+                    ln.addConnection(from)
+                }
+
+                continue
             }
             
             if (!this.layers.has(layer)) {
@@ -84,21 +100,33 @@ export class LayoutGraph {
             
             this.layers.get(layer).push(ln)
             
-            visited.set(node, {layer, ind: this.layers.get(layer).length - 1})
+            const pos = {
+                layer,
+                ind: this.layers.get(layer).length - 1
+            }
+
+            visited.set(node, pos)
+
+            if (from){
+                ln.addConnection(from)
+            }
 
             for (const child of node.children) {
-                traverse(child, layer + 1)
-
-                ln.addConnection(visited.get(child))
+                queue.push({
+                    node: child,
+                    layer: layer + 1,
+                    from: pos
+                })
             }
 
             for (const parent of node.parents) {
-                traverse(parent, layer - 1)
-
-                ln.addConnection(visited.get(parent))
+                queue.push({
+                    node: parent,
+                    layer: layer - 1,
+                    from: pos
+                })
             }
         }
-        traverse(rootNode, 0)
     }
 }
 

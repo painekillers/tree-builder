@@ -8,7 +8,10 @@ import {
     DrawGraph
 } from "./graph.js"
 
-import { test } from "./objects.js"
+import {
+    test,
+    Line
+} from "./objects.js"
 
 
 const canvas = document.createElement("canvas")
@@ -44,11 +47,13 @@ window.addEventListener("resize", () => {
 // --------------------
 
 const nodes = [
-    new Node("A", [], ["B"], "A"),
-    new Node("B", ["A"], ["C", "D"], "B"),
-    new Node("C", ["B"], [], "C"),
-    new Node("D", ["B"], ["E"], "D"),
-    new Node("E", ["D"], [], "E")
+    new Node("A", [], ["B", "C"], "A"),
+    new Node("B", ["A"], ["D", "E"], "B"),
+    new Node("C", ["A"], ["F", "G"], "C"),
+    new Node("D", ["B"], ["A"], "D"),
+    new Node("E", ["B"], ["F"], "E"),
+    new Node("F", ["C", "E"], ["G"], "F"),
+    new Node("G", ["C", "F"], [], "G")
 ]
 
 const graph = new Graph(nodes)
@@ -71,6 +76,26 @@ const drawGraph = new DrawGraph(
 // ADD GRAPH TO WORLD
 // --------------------
 
+// Add edges first so nodes render on top
+for (const connection of drawGraph.connections) {
+    world.addObject(
+        new Line(
+            world,
+            {
+                x: connection.fromNode.x,
+                y: connection.fromNode.y
+            },
+            {
+                x: connection.toNode.x,
+                y: connection.toNode.y
+            },
+            3
+        )
+    )
+}
+
+
+// Add nodes
 for (const drawNode of drawGraph.nodes) {
     world.addObject(
         new test(
@@ -78,7 +103,8 @@ for (const drawNode of drawGraph.nodes) {
             drawNode.x,
             drawNode.y,
             drawNode.width,
-            drawNode.height
+            drawNode.height,
+            drawNode.layoutNode.node.id
         )
     )
 }

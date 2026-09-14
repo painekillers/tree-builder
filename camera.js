@@ -12,18 +12,24 @@ export default class Camera {
     }
 
     set pos(p){
+        if (this.#world.paused) return
+
         this.#x = p[0]
         this.#y = p[1]
         this.#world.update()
     }
 
     set viewport(v){
+        if (this.#world.paused) return
+
         this.#width = v[0]
         this.#height = v[1]
         this.#world.update()
     }
 
     set zoom(val) {
+        if (this.#world.paused) return
+
         this.#zoom = val
         this.#world.update()
     }
@@ -32,18 +38,17 @@ export default class Camera {
         return {
             x: this.#x,
             y: this.#y
-            }
+        }
     }
 
     get viewport(){
         return {
-            width: this.#width, 
+            width: this.#width,
             height: this.#height
-            }
+        }
     }
     
     get zoom(){
         return this.#zoom
     }
-    
 }
