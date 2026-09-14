@@ -137,34 +137,16 @@ export class Line extends Object {
         this.#width = width
     }
 
-    set from(p) {
-        this.#from = p
-        this.world.update()
-    }
-
-    set to(p) {
-        this.#to = p
-        this.world.update()
-    }
-
-    set width(val) {
-        this.#width = val
-        this.world.update()
-    }
-
-    get from() {
-        return this.#from
-    }
-
-    get to() {
-        return this.#to
-    }
-
-    get width() {
-        return this.#width
-    }
-
     draw(ctx) {
+        ctx.save()
+
+        ctx.lineCap = "round"
+
+        // Soft edge and shadow
+        ctx.shadowColor = "rgba(0, 0, 0, 0.12)"
+        ctx.shadowBlur = 4
+        ctx.shadowOffsetY = 1
+
         ctx.beginPath()
 
         ctx.moveTo(
@@ -178,8 +160,10 @@ export class Line extends Object {
         )
 
         ctx.lineWidth = this.#width
-        ctx.strokeStyle = "black"
+        ctx.strokeStyle = "#999"
         ctx.stroke()
+
+        ctx.restore()
     }
 }
 

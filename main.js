@@ -84,27 +84,14 @@ background.onload = () => world.update()
 // --------------------
 // GRAPH
 // --------------------
-
 const nodes = [
     new Node("A", [], ["B", "C"], "A"),
 
-    new Node("B", ["A"], ["D", "E"], "B"),
-    new Node("C", ["A"], ["F", "G"], "C"),
+    new Node("B", ["A"], ["D"], "B"),
+    new Node("C", ["A"], ["D"], "C"),
 
-    new Node("D", ["B"], ["H", "A"], "D"),
-    new Node("E", ["B"], ["F", "I"], "E"),
-
-    new Node("F", ["C", "E"], ["G", "J"], "F"),
-    new Node("G", ["C", "F"], ["K"], "G"),
-
-    new Node("H", ["D"], ["L"], "H"),
-    new Node("I", ["E"], ["J"], "I"),
-
-    new Node("J", ["F", "I"], ["K"], "J"),
-    new Node("K", ["G", "J"], ["M"], "K"),
-
-    new Node("L", ["H"], [], "L"),
-    new Node("M", ["K"], ["A"], "M")
+    new Node("D", ["B", "C"], ["E"], "D"),
+    new Node("E", ["D"], ["A"], "E")
 ]
 
 const graph = new Graph(nodes)
