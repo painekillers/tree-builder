@@ -13,6 +13,10 @@ export class Node {
 export class Graph {
     constructor(nodes){
         this.nodes = new Map(nodes.map(n => [n.id, n]))
+        
+        if (this.nodes.size !== nodes.length) {
+            console.warn(`Duplicate node IDs`)
+        }
 
         // resolve parent and child references
         for (const node of this.nodes.values()) {
@@ -22,6 +26,10 @@ export class Graph {
             // node says X is its parent
             for (const parentId of parentIds) {
                 const parent = this.nodeFromId(parentId);
+                if(!parent) {
+                    console.warn(`Parent with id ${parentId} not found for node ${node.id}`);
+                    continue;
+                }
 
                 if (!node.parents.includes(parent)) {
                 node.parents.push(parent);
@@ -35,6 +43,10 @@ export class Graph {
             // node says X is its child
             for (const childId of childIds) {
                 const child = this.nodeFromId(childId);
+                if(!child) {
+                    console.warn(`Child with id ${childId} not found for node ${node.id}`);
+                    continue;
+                }
 
                 if (!node.children.includes(child)) {
                 node.children.push(child);
@@ -54,9 +66,11 @@ export class Graph {
 }
 
 export class LayoutNode {
-    constructor(node) {
+    constructor(node, l) {
         this.node = node
         this.connected = []
+
+        this.layer = l
     }
 
     addConnection(c){
@@ -65,10 +79,19 @@ export class LayoutNode {
 }
 
 export class LayoutGraph {
-    constructor(graph, root) {
+    constructor(graph, root, recurse) {
         this.layers = new Map()
 
         const rootNode = graph.nodeFromId(root)
+        if(!rootNode) {
+            throw new Error(`Root node with id ${root} not found in graph`);
+        }
+
+        if(recurse === 0) {
+            this.layers.set(0, [new LayoutNode(rootNode, 0)])
+            return
+        }
+
         const visited = new Map()
         const queue = [{
             node: rootNode,
@@ -81,7 +104,7 @@ export class LayoutGraph {
         while (qi < queue.length) {
             const { node, layer, from } = queue[qi++]
 
-            if (visited.has(node)) {
+            if (visited.has(node) && !recurse) {
                 if (from) {
                     const pos = visited.get(node)
                     const ln = this.layers.get(pos.layer)[pos.ind]
@@ -93,10 +116,14 @@ export class LayoutGraph {
             }
             
             if (!this.layers.has(layer)) {
+                if (recurse && Math.abs(layer) > recurse) {
+
+                    continue
+                }
                 this.layers.set(layer, [])
             }
             
-            const ln = new LayoutNode(node)
+            const ln = new LayoutNode(node, layer)
             
             this.layers.get(layer).push(ln)
             

@@ -84,7 +84,21 @@ export class test extends PSInstance {
     }
 }
 
-export class Image extends PSInstance {
+const placeholder = new Image()
+
+placeholder.src = "data:image/svg+xml," + encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+    <rect width="200" height="200" fill="#ddd"/>
+    <text x="100" y="105"
+        text-anchor="middle"
+        font-family="sans-serif"
+        font-size="20">
+        No Image
+    </text>
+</svg>
+`)
+
+export class ImageInstance extends PSInstance {
     #image
 
     set image(img){
@@ -101,7 +115,7 @@ export class Image extends PSInstance {
         let size = this.size
 
         ctx.drawImage(
-            this.#image,
+            this.#image ?? placeholder,
             pos.x - size.width / 2,
             pos.y - size.height / 2,
             size.width,
@@ -169,24 +183,15 @@ export class Line extends Object {
     }
 }
 
-export class Node extends Image {
-    #value
+export class NodeInstance extends ImageInstance {
+    #node
     #hovered = false
 
-    constructor(world, x, y, width, height, value, image) {
+    constructor(world, x, y, width, height, node, image) {
         super(world, x, y, width, height)
 
-        this.#value = value
+        this.#node = node
         this.image = image
-    }
-
-    get value() {
-        return this.#value
-    }
-
-    set value(val) {
-        this.#value = val
-        this.world.update()
     }
 
     mouseEnter() {
@@ -200,6 +205,6 @@ export class Node extends Image {
     }
 
     click() {
-        console.log("clicked node:", this.#value)
+        console.log("clicked node:", this.#node.val)
     }
 }

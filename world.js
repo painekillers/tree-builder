@@ -91,6 +91,20 @@ export default class World {
         this.update()
     }
 
+    bulkRemove(func) {
+        if (this.#paused) return
+
+        this.#objects = this.#objects.filter(obj => {
+            if (func(obj)) {
+                if (this.#hoveredObject === obj) {
+                    this.#hoveredObject = null
+                }
+                return false
+            }
+            return true
+        })
+    }
+
     clear() {
         if (this.#paused) return
 
