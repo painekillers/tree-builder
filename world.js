@@ -10,6 +10,7 @@ export default class World {
     updateRate = 1/60
 
     #objects = []
+    #background
 
     constructor(canvas) {
         this.#canvas = canvas
@@ -57,6 +58,11 @@ export default class World {
 
     set camera(cam) {
         this.#camera = cam
+        this.update()
+    }
+
+    set background(bg) {
+        this.#background = bg
         this.update()
     }
 
@@ -135,6 +141,17 @@ export default class World {
                 this.#canvas.width,
                 this.#canvas.height
             )
+
+            if (this.#background) {
+                
+                this.#ctx.drawImage(
+                    this.#background,
+                    0,
+                    0,
+                    this.#canvas.width,
+                    this.#canvas.height
+                )
+            }
 
             this.#ctx.save()
 

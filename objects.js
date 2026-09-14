@@ -88,11 +88,11 @@ const placeholder = new Image()
 
 placeholder.src = "data:image/svg+xml," + encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
-    <rect width="200" height="200" fill="#ddd"/>
     <text x="100" y="105"
         text-anchor="middle"
         font-family="sans-serif"
-        font-size="20">
+        font-size="20"
+        fill="#b0b0b5">
         No Image
     </text>
 </svg>
@@ -110,9 +110,9 @@ export class ImageInstance extends PSInstance {
         return this.#image
     }
 
-    draw(ctx){
-        let pos = this.pos
-        let size = this.size
+    draw(ctx, p, s){
+        let pos = p || this.pos
+        let size = s || this.size
 
         ctx.drawImage(
             this.#image ?? placeholder,
@@ -186,6 +186,8 @@ export class Line extends Object {
 export class NodeInstance extends ImageInstance {
     #node
     #hovered = false
+    #scale = 1
+    #animation = null
 
     constructor(world, x, y, width, height, node, image) {
         super(world, x, y, width, height)
@@ -194,14 +196,109 @@ export class NodeInstance extends ImageInstance {
         this.image = image
     }
 
+    #animate() {
+        if(this.#animation) return
+
+        const target = this.#hovered ? 1.04 : 1
+
+        const animate = () => {
+            const difference = target - this.#scale
+
+            if(Math.abs(difference) < 0.001) {
+                this.#scale = target
+                this.#animation = null
+                this.world.update()
+                return
+            }
+
+            this.#scale += difference * 0.18
+
+            this.world.update()
+
+            this.#animation = requestAnimationFrame(animate)
+        }
+
+        this.#animation = requestAnimationFrame(animate)
+    }
+
+    draw(ctx) {
+        let pos = this.pos
+        let size = this.size
+
+        let width = size.width * this.#scale
+        let height = size.height * this.#scale
+
+        let x = pos.x - width / 2
+        let y = pos.y - height / 2
+
+        let radius = 10
+
+        ctx.save()
+
+        // Soft depth
+        ctx.shadowColor = "rgba(0, 0, 0, 0.14)"
+        ctx.shadowBlur = this.#hovered ? 16 : 8
+        ctx.shadowOffsetY = this.#hovered ? 4 : 2
+
+        // Surface
+        ctx.fillStyle = "#f8f8f8"
+
+        ctx.beginPath()
+        ctx.roundRect(
+            x,
+            y,
+            width,
+            height,
+            radius
+        )
+        ctx.fill()
+
+        ctx.shadowColor = "transparent"
+
+        // Image
+        ctx.save()
+
+        ctx.beginPath()
+        ctx.roundRect(
+            x,
+            y,
+            width,
+            height,
+            radius
+        )
+        ctx.clip()
+
+        ctx.globalAlpha = this.#hovered ? 1 : 0.92
+
+        super.draw(ctx)
+
+        ctx.restore()
+
+        // Subtle edge
+        ctx.beginPath()
+        ctx.roundRect(
+            x,
+            y,
+            width,
+            height,
+            radius
+        )
+
+        ctx.lineWidth = 1
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.08)"
+        ctx.stroke()
+
+        ctx.restore()
+    }
+
     mouseEnter() {
         this.#hovered = true
-        this.world.update()
+        this.#animate()
     }
 
     mouseLeave() {
         this.#hovered = false
-        this.world.update()
+        this.#animate()
     }
 
     click() {

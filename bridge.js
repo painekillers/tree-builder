@@ -59,15 +59,9 @@ export default class Bridge {
 
             let obj = new Line(
                     this.world,
-                    {
-                        x: connection.fromNode.x,
-                        y: connection.fromNode.y
-                    },
-                    {
-                        x: connection.toNode.x,
-                        y: connection.toNode.y
-                    },
-                    3
+                    connection.from,
+                    connection.to,
+                    2
                 )
 
             this.obj.push(obj)
@@ -94,6 +88,13 @@ export default class Bridge {
             this.toObj.set(drawNode.layoutNode.node, obj)
             this.world.addObject(obj)
         }
+
+        console.log(
+            this.draw.connections.map(connection => ({
+                from: connection.fromNode.layoutNode.node.id,
+                to: connection.toNode.layoutNode.node.id
+            }))
+        )
 
     }
 }

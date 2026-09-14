@@ -13,7 +13,7 @@ export class Node {
 export class Graph {
     constructor(nodes){
         this.nodes = new Map(nodes.map(n => [n.id, n]))
-        
+
         if (this.nodes.size !== nodes.length) {
             console.warn(`Duplicate node IDs`)
         }
@@ -93,6 +93,29 @@ export class LayoutGraph {
         }
 
         const visited = new Map()
+        const connections = new Set()
+
+        const addConnection = (ln, from) => {
+            const fromNode =
+                this.layers.get(from.layer)?.[from.ind]
+
+            if(!fromNode) return
+
+            const ids = [
+                ln.node.id,
+                fromNode.node.id
+            ].sort()
+
+            const key = ids.join("|")
+
+            if(connections.has(key)) {
+                return
+            }
+
+            connections.add(key)
+            ln.addConnection(from)
+        }
+
         const queue = [{
             node: rootNode,
             layer: 0,
@@ -105,28 +128,28 @@ export class LayoutGraph {
             const { node, layer, from } = queue[qi++]
 
             if (visited.has(node) && !recurse) {
-                if (from) {
+                if(from) {
                     const pos = visited.get(node)
                     const ln = this.layers.get(pos.layer)[pos.ind]
 
-                    ln.addConnection(from)
+                    addConnection(ln, from)
                 }
 
                 continue
             }
-            
+
             if (!this.layers.has(layer)) {
                 if (recurse && Math.abs(layer) > recurse) {
-
                     continue
                 }
+
                 this.layers.set(layer, [])
             }
-            
+
             const ln = new LayoutNode(node, layer)
-            
+
             this.layers.get(layer).push(ln)
-            
+
             const pos = {
                 layer,
                 ind: this.layers.get(layer).length - 1
@@ -134,8 +157,8 @@ export class LayoutGraph {
 
             visited.set(node, pos)
 
-            if (from){
-                ln.addConnection(from)
+            if(from) {
+                addConnection(ln, from)
             }
 
             for (const child of node.children) {
@@ -171,6 +194,28 @@ export class DrawConnection {
     constructor(fromNode, toNode) {
         this.fromNode = fromNode
         this.toNode = toNode
+
+        if (fromNode.y <= toNode.y) {
+            this.from = {
+                x: fromNode.x,
+                y: fromNode.y + fromNode.height / 2
+            }
+
+            this.to = {
+                x: toNode.x,
+                y: toNode.y - toNode.height / 2
+            }
+        } else {
+            this.from = {
+                x: fromNode.x,
+                y: fromNode.y - fromNode.height / 2
+            }
+
+            this.to = {
+                x: toNode.x,
+                y: toNode.y + toNode.height / 2
+            }
+        }
     }
 }
 
