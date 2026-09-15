@@ -61,6 +61,10 @@ export default class World {
         this.update()
     }
 
+    get camera() {
+        return this.#camera
+    }
+
     set background(bg) {
         this.#background = bg
         this.update()

@@ -55,33 +55,44 @@ export default class Bridge {
 
         // Add edges first so nodes render on top
         for (const connection of this.draw.connections) {
-            if(Math.abs(connection.fromNode.layoutNode.layer) > maxDepth || Math.abs(connection.toNode.layoutNode.layer) > maxDepth){ continue }
+            if(
+                maxDepth !== null &&
+                (
+                    Math.abs(connection.fromNode.layoutNode.layer) > maxDepth ||
+                    Math.abs(connection.toNode.layoutNode.layer) > maxDepth
+                )
+            ){
+                continue
+            }
 
             let obj = new Line(
-                    this.world,
-                    connection.from,
-                    connection.to,
-                    2
-                )
+                this.world,
+                connection.from,
+                connection.to,
+                2
+            )
 
             this.obj.push(obj)
             this.world.addObject(obj)
         }
-        
-        
+
         // Add nodes
         for (const drawNode of this.draw.nodes) {
-            if(Math.abs(drawNode.layoutNode.layer) > maxDepth){ continue }
+            if(
+                maxDepth !== null &&
+                Math.abs(drawNode.layoutNode.layer) > maxDepth
+            ){
+                continue
+            }
 
             let obj = new NodeInstance(
-                    this.world,
-                    drawNode.x,
-                    drawNode.y,
-                    drawNode.width,
-                    drawNode.height,
-                    drawNode.layoutNode.node
-                    //Remember to add the actual image here!!!
-                )
+                this.world,
+                drawNode.x,
+                drawNode.y,
+                drawNode.width,
+                drawNode.height,
+                drawNode.layoutNode.node
+            )
 
             this.obj.push(obj)
             this.toNode.set(obj, drawNode.layoutNode.node)
@@ -95,6 +106,26 @@ export default class Bridge {
                 to: connection.toNode.layoutNode.node.id
             }))
         )
+    }
 
+    focus(node) {
+        if(!this.toObj) {
+            console.warn("createObjects must be called prior to this")
+            return
+        }
+
+        const obj = this.toObj.get(node)
+
+        if(!obj) {
+            console.warn(`Node ${node.id} is not currently visible`)
+            return
+        }
+
+        this.world.camera.pos = [
+            obj.pos.x,
+            obj.pos.y
+        ]
+
+        this.world.update()
     }
 }
