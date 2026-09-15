@@ -1,4 +1,4 @@
-import { LayoutGraph, DrawGraph } from "./graph.js"
+import { LayoutGraph, DrawGraph } from "../graph.js"
 import { NodeInstance, Line } from "./objects.js"
 import World from "./world.js"
 
