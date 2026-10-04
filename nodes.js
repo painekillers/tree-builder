@@ -9,5 +9,6 @@ export default [
     new Node("C", ["A"], ["D"], "C"),
 
     new Node("D", ["B", "C"], ["E"], "D"),
-    new Node("E", ["D"], ["A"], "E")
+    new Node("E", ["D"], ["A", "F"], "E"),
+    new Node("F", ["E"], [], "F")
 ]
