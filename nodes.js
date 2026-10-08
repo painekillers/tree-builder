@@ -1,6 +1,6 @@
 // This script makes our nodes and stuff
 
-import { Node } from "../core/graph.js"
+import { Node } from "./core/graph.js"
 
 export default [
     new Node("A", [], ["B", "C"], "A"),

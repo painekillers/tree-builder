@@ -1,6 +1,6 @@
-import Viewer from "../viewer/viewer.js"
-import { ThemeContainer } from "../viewer/theme.js"
-import { Graph } from "../core/graph.js"
+import Viewer from "./viewer/viewer.js"
+import { ThemeContainer } from "./viewer/theme.js"
+import { Graph } from "./core/graph.js"
 
 import nodes from "./nodes.js"
 
