@@ -68,14 +68,14 @@ export class ThemeApplier {
 
         this.#defaultCSS.rel = "stylesheet"
         this.#defaultCSS.href =
-            "../core/themes/default.css"
+            "./core/themes/default.css"
 
         this.#css =
             document.createElement("link")
 
         this.#css.rel = "stylesheet"
         this.#css.href =
-            "../core/themes/default.css"
+            "./core/themes/default.css"
 
         this.#shadow.append(
             this.#defaultCSS,
