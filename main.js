@@ -7,8 +7,7 @@ import nodes from "./nodes.js"
 const themes = new ThemeContainer()
 
 await themes.load(
-    "Dark",
-    "./core/themes/dark.js"
+    "Dark"
 )
 
 const viewer = new Viewer(

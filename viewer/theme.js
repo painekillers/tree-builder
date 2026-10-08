@@ -24,19 +24,63 @@ const merge = (base, theme) => {
     return result
 }
 
+const loadBuiltInTheme = async name => {
+    const path = new URL(
+        `../core/themes/${name.toLowerCase()}`,
+        import.meta.url
+    )
+
+    return {
+        theme: await loadTheme(`${path}.js`),
+        css: `${path}.css`
+    }
+}
+
 const defaultTheme =
-    await loadTheme("../core/themes/default.js")
+    await loadBuiltInTheme("Default")
 
 export class ThemeContainer {
     #themes = {
         Default: defaultTheme
     }
 
-    async load(name, path) {
-        this.#themes[name] = merge(
-            defaultTheme,
-            await loadTheme(path)
-        )
+    async load(name, jsPath, cssPath) {
+        if (
+            jsPath === undefined &&
+            cssPath === undefined
+        ) {
+            const builtIn =
+                await loadBuiltInTheme(name)
+
+            this.#themes[name] = {
+                theme: merge(
+                    defaultTheme.theme,
+                    builtIn.theme
+                ),
+                css: builtIn.css
+            }
+
+            return
+        }
+
+        if (
+            jsPath === undefined ||
+            cssPath === undefined
+        ) {
+            console.warn(
+                `Theme ${name} requires both a JS path and a CSS path`
+            )
+
+            return
+        }
+
+        this.#themes[name] = {
+            theme: merge(
+                defaultTheme.theme,
+                await loadTheme(jsPath)
+            ),
+            css: cssPath
+        }
     }
 
     get(name) {
@@ -44,7 +88,13 @@ export class ThemeContainer {
     }
 
     get themes() {
-        return this.#themes
+        return Object.fromEntries(
+            Object.entries(this.#themes)
+                .map(([name, value]) => [
+                    name,
+                    value.theme
+                ])
+        )
     }
 }
 
@@ -63,19 +113,22 @@ export class ThemeApplier {
         this.#container = container
         this.#shadow = shadow
 
+        const defaultTheme =
+            this.#container.get("Default")
+
         this.#defaultCSS =
             document.createElement("link")
 
         this.#defaultCSS.rel = "stylesheet"
         this.#defaultCSS.href =
-            "./core/themes/default.css"
+            defaultTheme.css
 
         this.#css =
             document.createElement("link")
 
         this.#css.rel = "stylesheet"
         this.#css.href =
-            "./core/themes/default.css"
+            defaultTheme.css
 
         this.#shadow.append(
             this.#defaultCSS,
@@ -83,7 +136,7 @@ export class ThemeApplier {
         )
 
         this.#current =
-            this.#container.get("Default")
+            defaultTheme.theme
     }
 
     async apply(name) {
@@ -98,10 +151,8 @@ export class ThemeApplier {
             return
         }
 
-        this.#current = theme
-
-        this.#css.href =
-            `../core/themes/${name.toLowerCase()}.css`
+        this.#current = theme.theme
+        this.#css.href = theme.css
 
         for (const func of this.#subscription) {
             func()
