@@ -8,7 +8,7 @@ const themes = new ThemeContainer()
 
 await themes.load(
     "Dark",
-    "../core/themes/dark.js"
+    "./core/themes/dark.js"
 )
 
 const viewer = new Viewer(
