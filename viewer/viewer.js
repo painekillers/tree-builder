@@ -1,13 +1,15 @@
-import World from "../core/world/world.js"
-import Camera from "../core/world/camera.js"
+import { 
+    World, 
+    Camera,
+    Bridge
+ } from "@painekillers/tree-builder-core"
+
 import SearchIndex from "./search.js"
 
 import {
     Node,
     Graph
-} from "../core/graph.js"
-
-import Bridge from "../core/world/bridge.js"
+} from "@painekillers/tree-builder-core"
 
 import Tooltip from "./tooltip.js"
 

@@ -1,0 +1,9 @@
+{
+  "name": "tree-builder",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/core",
+    "packages/viewer"
+  ]
+}

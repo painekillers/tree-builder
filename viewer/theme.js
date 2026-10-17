@@ -26,13 +26,15 @@ const merge = (base, theme) => {
 
 const loadBuiltInTheme = async name => {
     const path = new URL(
-        `../core/themes/${name.toLowerCase()}`,
+        `./themes/${name.toLowerCase()}.css`,
         import.meta.url
     )
 
     return {
-        theme: await loadTheme(`${path}.js`),
-        css: `${path}.css`
+        theme: await loadTheme(
+            `@painekillers/tree-builder-core/themes/${name.toLowerCase()}.js`
+        ),
+        css: path.href
     }
 }
 

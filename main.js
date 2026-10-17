@@ -1,14 +1,11 @@
-import Viewer from "./viewer/viewer.js"
-import { ThemeContainer } from "./viewer/theme.js"
-import { Graph } from "./core/graph.js"
+import { Viewer, ThemeContainer } from "@painekillers/tree-builder-viewer"
+import { Graph } from "@painekillers/tree-builder-core"
 
 import nodes from "./nodes.js"
 
 const themes = new ThemeContainer()
 
-await themes.load(
-    "Dark"
-)
+await themes.load("Dark")
 
 const viewer = new Viewer(
     document.getElementById("tree"),
