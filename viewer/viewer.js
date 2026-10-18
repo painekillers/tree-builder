@@ -663,8 +663,13 @@ export default class Viewer {
         )
     }
 
-    updateUi() {
-        Object.values(this.#uiUpdates).forEach(callback => callback())
+    updateUi(updateTheme = false) {
+        this.#uiUpdates.updateSearchResults()
+
+        if (updateTheme) {
+            this.#uiUpdates.updateThemeButtons()
+            this.#uiUpdates.updateThemeMenu()
+        }
     }
 
     setRoot(root) {

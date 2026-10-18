@@ -217,9 +217,7 @@ export class LayoutGraph {
                     from: pos
                 })
             }
-
-            console.log(node, layer, from)
-
+            
         }
     }
 }
