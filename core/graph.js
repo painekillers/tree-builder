@@ -97,7 +97,6 @@ To Implement
 
 export class LayoutGraph {
     constructor(graph, root, recurse, strategy = "First") {
-        console.log(strategy)
         this.layers = new Map()
 
         const rootNode = graph.nodeFromId(root)
@@ -217,7 +216,7 @@ export class LayoutGraph {
                     from: pos
                 })
             }
-            
+
         }
     }
 }
