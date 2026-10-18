@@ -40,6 +40,7 @@ export default class Viewer {
     #enabled = false
 
     recurse = true
+    strategy = "First"
     /*
     Null: No recursion
     False: Creates fake nodes when encountering recursion
@@ -546,7 +547,8 @@ export default class Viewer {
                 root.addEventListener("click", () => {
                     this.#bridge.calculateLayout(
                         result.entry.value.id,
-                        this.recurse
+                        this.recurse,
+                        this.strategy
                     )
 
                     this.#bridge.calculateDraw(
@@ -676,7 +678,8 @@ export default class Viewer {
 
         this.#bridge.calculateLayout(
             root,
-            this.recurse
+            this.recurse,
+            this.strategy
         )
     }
 

@@ -79,8 +79,25 @@ export class LayoutNode {
     }
 }
 
+/*
+Null: No recursion
+False: Creates fake nodes when encountering recursion
+True: Connects back to existing instance of a node when recursing
+#: Real recursion to depths #
+*/
+
+/*
+To Implement
+- [X] Current BFS (First) — Layer by shortest distance from root; first discovery determines placement.
+- [X] Undirected BFS (Undirected) — Shortest distance to root; layering is on directional.
+- [X] Directed BFS, outward only (Outwards) — Follow prerequisite-to-dependent edges only.
+- [ ] Furthest-parent layering (Furthest) — Place each node one layer below its deepest prerequisite.
+- [ ] Shortest unaccounted-for path (Unaccounted) — Ignore prerequisites accounted for by another prerequisite's ancestry, then use the shortest remaining path.
+*/
+
 export class LayoutGraph {
-    constructor(graph, root, recurse) {
+    constructor(graph, root, recurse, strategy = "First") {
+        console.log(strategy)
         this.layers = new Map()
 
         const rootNode = graph.nodeFromId(root)
@@ -145,7 +162,12 @@ export class LayoutGraph {
 
                     //holy crap i cannot think bruh
                     if(((recurse === false) || (recurse === null)) && pos.layer !== layer) { 
-                        if(recurse === null) { continue }
+                        if (
+                            recurse == null ||
+                            strategy == "Outwards" &&
+                            from !== null &&
+                            Math.abs(layer) < Math.abs(from.layer)
+                        ) { continue }
                         const fn = new LayoutNode(node, layer, this.layers.get(pos.layer)[pos.ind])
                         this.layers.get(layer).push(fn)
 
@@ -158,6 +180,12 @@ export class LayoutGraph {
 
                 continue
             }
+
+            if (
+                strategy == "Outwards" &&
+                from !== null &&
+                Math.abs(layer) < Math.abs(from.layer)
+            ) { continue }
 
             const ln = new LayoutNode(node, layer)
 
@@ -185,10 +213,13 @@ export class LayoutGraph {
             for (const parent of node.parents) {
                 queue.push({
                     node: parent,
-                    layer: layer - 1,
+                    layer: strategy !== "Undirected" ? layer - 1: layer + 1,
                     from: pos
                 })
             }
+
+            console.log(node, layer, from)
+
         }
     }
 }

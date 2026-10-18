@@ -14,6 +14,8 @@ const viewer = new Viewer(
 
 viewer.graph = new Graph(nodes)
 
+viewer.strategy = "Outwards"
+
 viewer.setRoot("A")
 viewer.setSize(50, 50, 100, 50)
 viewer.draw()
