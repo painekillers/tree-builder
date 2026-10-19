@@ -42,10 +42,19 @@ export default class Viewer {
     recurse = true
     strategy = "First"
     /*
+    Recursion settings
     Null: No recursion
     False: Creates fake nodes when encountering recursion
     True: Connects back to existing instance of a node when recursing
     #: Real recursion to depths #
+    */
+
+    /*
+    Strategies
+    - [X] Current BFS (First) — Layer by shortest distance from root; first discovery determines placement.
+    - [X] Undirected BFS (Undirected) — Shortest distance to root; layering is on directional.
+    - [X] Directed BFS, outward only (Outwards) — Follow prerequisite-to-dependent edges only.
+    - [X] Furthest-parent layering (Furthest) — Place each node one layer below its deepest prerequisite.
     */
 
     constructor(container, themes) {
