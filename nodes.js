@@ -6,9 +6,8 @@ export default [
     new Node("A", [], ["B", "C"], "A"),
 
     new Node("B", ["A"], ["D"], "B"),
-    new Node("C", ["A", "E"], [], "C"),
+    new Node("C", ["A"], ["E"], "C"),
 
-    new Node("D", ["B"], ["E"], "D"),
-    new Node("E", [], [], "E"),
-
+    new Node("D", ["B", "E"], [], "D"),
+    new Node("E", ["C"], ["D"], "E"),
 ]
