@@ -38,6 +38,7 @@ export default class Viewer {
     #uiUpdates
 
     #nodeMenu
+    #getName
 
     #enabled = false
 
@@ -61,6 +62,8 @@ export default class Viewer {
     */
 
     constructor(container, themes, interpretNode, getName) {
+        this.#getName = getName
+
         this.#container = container
 
         this.#shadow = this.#container.attachShadow({
@@ -636,7 +639,7 @@ export default class Viewer {
         }
 
         this.#nodeMenu = node => {
-            nodeMenuTitle.textContent = getName?.(node) ?? node.id
+            nodeMenuTitle.textContent = this.#getName?.(node) ?? node.id
             nodeMenuContent.replaceChildren()
 
             interpretNode?.(node, nodeMenuContent)
@@ -699,7 +702,7 @@ export default class Viewer {
 
         this.#search.entries =
             Array.from(graph?.nodes.values()).map(node => ({
-                name: getName?.(node) ?? node.id,
+                name: this.#getName?.(node) ?? node.id,
                 value: node
             }))
 
