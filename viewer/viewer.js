@@ -639,7 +639,7 @@ export default class Viewer {
         }
 
         this.#nodeMenu = node => {
-            nodeMenuTitle.textContent = this.#getName?.(node) ?? node.id
+            nodeMenuTitle.textContent = this.#getName?.(node, true) ?? node.id
             nodeMenuContent.replaceChildren()
 
             interpretNode?.(node, nodeMenuContent)
@@ -702,7 +702,7 @@ export default class Viewer {
 
         this.#search.entries =
             Array.from(graph?.nodes.values()).map(node => ({
-                name: this.#getName?.(node) ?? node.id,
+                name: this.#getName?.(node, false) ?? node.id,
                 value: node
             }))
 
