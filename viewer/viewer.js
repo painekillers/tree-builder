@@ -40,6 +40,9 @@ export default class Viewer {
     #nodeMenu
     #getName
 
+    #openMenu
+    #closeMenus
+
     #enabled = false
 
     recurse = true
@@ -373,7 +376,17 @@ export default class Viewer {
 
         function openMenu(menu) {
             closeMenus()
-            menu.style.display = "block"
+            menu?.style.display = "block"
+        }
+
+        this.#closeMenus = closeMenus
+        this.#openMenu = menu => {
+            openMenu(
+                menu === "search" ? searchMenu :
+                menu === "theme" ? themeMenu :
+                menu === "node" ? nodeMenu :
+                null
+            )
         }
 
         searchButton.addEventListener("click", () => {
@@ -694,6 +707,14 @@ export default class Viewer {
 
     get nodeMenu() {
         return this.#nodeMenu
+    }
+
+    get openMenu() {
+        return this.#openMenu
+    }
+
+    get closeMenus() {
+        return this.#closeMenus
     }
 
     set graph(graph) {
