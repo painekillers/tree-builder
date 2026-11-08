@@ -571,7 +571,7 @@ export default class Viewer {
 
                 info.append(name)
 
-                if(
+                /*if(
                     result.entry.name !==
                     result.entry.value.id
                 ) {
@@ -581,7 +581,7 @@ export default class Viewer {
                         `(alias of ${result.entry.value.id})`
 
                     info.append(alias)
-                }
+                }*/
 
                 const actions = document.createElement("div")
                 actions.className = "search-entry-actions"
@@ -725,7 +725,7 @@ export default class Viewer {
 
         this.#search.entries =
             Array.from(graph?.nodes.values()).map(node => ({
-                name: this.#getName?.(node, false) ?? node.id,
+                name: this.#getName?.(node, true) ?? node.id,
                 value: node
             }))
 
