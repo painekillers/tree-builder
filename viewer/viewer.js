@@ -376,7 +376,9 @@ export default class Viewer {
 
         function openMenu(menu) {
             closeMenus()
-            menu?.style.display = "block"
+            if (menu) {
+                menu.style.display = "block"
+            }
         }
 
         this.#closeMenus = closeMenus
