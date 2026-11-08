@@ -600,6 +600,8 @@ canvas {
 
     object-fit: contain;
 
+    image-rendering: pixelated;
+
     margin-bottom: 16px;
 
     border: 1px solid rgba(0, 0, 0, 0.08);
