@@ -60,7 +60,7 @@ export default class Viewer {
     - [X] Furthest-parent layering (Furthest) — Place each node one layer below its deepest prerequisite.
     */
 
-    constructor(container, themes, interpretNode) {
+    constructor(container, themes, interpretNode, getName) {
         this.#container = container
 
         this.#shadow = this.#container.attachShadow({
@@ -636,7 +636,7 @@ export default class Viewer {
         }
 
         this.#nodeMenu = node => {
-            nodeMenuTitle.textContent = node.id
+            nodeMenuTitle.textContent = getName?.(node) ?? node.id
             nodeMenuContent.replaceChildren()
 
             interpretNode?.(node, nodeMenuContent)
@@ -699,7 +699,7 @@ export default class Viewer {
 
         this.#search.entries =
             Array.from(graph?.nodes.values()).map(node => ({
-                name: node.id,
+                name: getName?.(node) ?? node.id,
                 value: node
             }))
 
